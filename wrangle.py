@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 from env import get_db_url
+from sklearn.model_selection import train_test_split
 def clean_data_path(filename:str)->str:
     '''clean_data_path takes a string with the name of a file and modifies it to fit the desired filepath format i.e. data/*.csv'''
     if not filename.startswith('data/'):
@@ -36,12 +37,19 @@ def acquire_zillow():
         return df
 def wrangle_zillow()->pd.DataFrame:
     #load the dataset
-    df = acquire_zillow()
-    #fillna with yearbuilt (easily ignored if po)    
-    df.yearbuilt = df.yearbuilt.fillna(0).astype(int)
+    df = acquire_zillow() 
     df = df.dropna()
     df.bedroomcnt = df.bedroomcnt.astype(int)
     df = df.rename(columns={'bedroomcnt':'bed_count','bathroomcnt':'bath_count',\
         'taxvaluedollarcnt':'tax_value','yearbuilt':'year_built','taxamount':'taxes',\
             'calculatedfinishedsquarefeet':'calc_finished_sqft'})
+    df.year_built = df.year_built.astype(int)
     return df
+
+def tvt_split(df:pd.DataFrame,stratify:str = None,tv_split:float = .2,validate_split:float= .3):
+    '''tvt_split takes a pandas DataFrame, a string specifying the variable to stratify over,
+    as well as 2 floats where 0< f < 1 and returns a train, validate, and test split of the DataFame,
+    split by tv_split initially and validate_split thereafter. '''
+    train_validate, test = train_test_split(df,test_size=tv_split,random_state=123,stratify=stratify)
+    train, validate = train_test_split(train_validate,test_size=validate_split,random_state=123,stratify=stratify)
+    return train,validate,test
