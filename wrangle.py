@@ -21,9 +21,7 @@ def acquire_zillow():
         taxvaluedollarcnt,yearbuilt,
         taxamount, fips 
         FROM properties_2016 
-        JOIN propertylandusetype
-        USING(propertylandusetypeid)
-        WHERE propertylandusedesc = "Single Family Residential";'''
+        WHERE propertylandusetypeid = 261;'''
         df_2016 = pd.read_sql(query,url)
         query = '''
         SELECT bedroomcnt,
@@ -31,9 +29,7 @@ def acquire_zillow():
         taxvaluedollarcnt,yearbuilt,
         taxamount, fips 
         FROM properties_2017
-        JOIN propertylandusetype
-        USING(propertylandusetypeid)
-        WHERE propertylandusedesc = "Single Family Residential";'''
+        WHERE propertylandusetypeid = 261;'''
         df_2017 = pd.read_sql(query,url)
         df = pd.concat([df_2016,df_2017],axis=0)
         df.to_csv(filename,index=False)
