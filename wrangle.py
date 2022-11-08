@@ -44,6 +44,7 @@ def wrangle_zillow()->pd.DataFrame:
         'taxvaluedollarcnt':'tax_value','yearbuilt':'year_built','taxamount':'taxes',\
             'calculatedfinishedsquarefeet':'calc_finished_sqft'})
     df.year_built = df.year_built.astype(int)
+    df.fips = df.fips.astype(int)
     return df
 
 def tvt_split(df:pd.DataFrame,stratify:str = None,tv_split:float = .2,validate_split:float= .3):
