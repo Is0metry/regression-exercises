@@ -54,3 +54,15 @@ def tvt_split(df:pd.DataFrame,stratify:str = None,tv_split:float = .2,validate_s
     train_validate, test = train_test_split(df,test_size=tv_split,random_state=123,stratify=stratify)
     train, validate = train_test_split(train_validate,test_size=validate_split,random_state=123,stratify=stratify)
     return train,validate,test
+
+
+def handle_outliers(df:pd.DataFrame):
+    """Manually handle outliers that do not represent properties likely for 99% of buyers and zillow visitors"""
+    df = df[df.bath_count <= 6]
+    
+    df = df[df.bed_count <= 6]
+
+    df = df[df.tax_value < 2_000_000]
+
+    df = df[df.calc_finished_sqft < 10000]
+    return df
